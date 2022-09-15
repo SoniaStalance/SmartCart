@@ -1,0 +1,25 @@
+.full-width-table {
+  width: 100%;
+}
+.flex-row-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: initial;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+}
+.flex-row-container > .flex-row-item {
+  flex: 1 1 30%;
+  height: 100px;
+}
+
+.flex-row-item {
+  text-align: left;
+  margin-right: 1%;
+}    
+@media  screen and (max-width:481px) {
+  .flex-row-container > .flex-row-item {
+    flex: 100%
+  }
+}
