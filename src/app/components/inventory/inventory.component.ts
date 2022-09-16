@@ -33,7 +33,7 @@ export class InventoryComponent implements OnInit {
   imgSrc = "";
   cartImgSrc = "";
   qrcodeSrc = "";
-  paymentDone = false;
+  paymentInitiated = false;
 
   totalBill = 0;
 
@@ -157,11 +157,11 @@ export class InventoryComponent implements OnInit {
   }
 
   pay(){
+    this.paymentInitiated = true;
     this.displayQrCode();
   }
 
   checkout(){
-    this.paymentDone = true;
     alert("Checkout completed!")
     this.reset();
   }
@@ -172,6 +172,6 @@ export class InventoryComponent implements OnInit {
     this.cart = [];
     this.updateBill();
     this.updateCart();
-    this.paymentDone = false;
-  }
+    this.paymentInitiated = false;
+  } 
 }

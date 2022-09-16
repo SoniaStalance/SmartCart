@@ -108,8 +108,8 @@
 
     <mat-card align="right">
         <mat-card-title>Total: {{totalBill}} $</mat-card-title>
-        <button mat-raised-button style="width: 25%;" color="primary" [disabled]="paymentDone" (click)="pay()">Pay</button> 
-        <div *ngIf="qrcodeSrc.length>0">
+        <button mat-raised-button style="width: 25%;" color="primary" (click)="pay()">Pay</button> 
+        <div *ngIf="paymentInitiated">
           <div>
             <img style="padding-top: 10px;" width="200px" src={{qrcodeSrc}}>
           </div>
