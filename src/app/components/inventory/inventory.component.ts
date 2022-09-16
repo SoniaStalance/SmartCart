@@ -1,8 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+
 import { InventoryItem } from '../../models/InventoryItem.model';
+import { BillItem } from 'src/app/models/BillItem.model';
+
 import { InventoryService } from '../../services/inventory.service';
 
 @Component({
@@ -21,16 +25,27 @@ export class InventoryComponent implements OnInit {
   cartDataSource!: MatTableDataSource<InventoryItem>;
   cart: InventoryItem[] = [];
 
+  @ViewChild('BillPaginator', {static: false}) billPaginator!: MatPaginator;
+  @ViewChild('BillSort', {static: false}) billSort!: MatSort;
+  billDataSource!: MatTableDataSource<BillItem>;
+  bill: BillItem[] = [];
+
   imgSrc = "";
   cartImgSrc = "";
+  qrcodeSrc = "";
+  paymentDone = false;
+
+  totalBill = 0;
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns = ['name'];
+  displayedColumns = ['name','price'];
+  displayedColumnsCart = ['name'];
+  displayedColumnsBill = ['name','price','quantity','total'];
 
   constructor(private service: InventoryService) {
-
     this.inventoryDataSource = new MatTableDataSource;
     this.cartDataSource = new MatTableDataSource;
+    this.billDataSource = new MatTableDataSource;
   }
 
   ngOnInit(): void {
@@ -46,17 +61,25 @@ export class InventoryComponent implements OnInit {
   }
 
   displayImg(imgName: string) {
+    this.cartImgSrc = "";
     this.imgSrc = '../../assets/images/'+imgName;
   }
 
   displayCartImg(imgName: string) {
+    this.imgSrc = "";
     this.cartImgSrc = '../../assets/images/'+imgName;
+  }
+
+  displayQrCode(){
+    this.qrcodeSrc = '../../assets/images/qrcode.png';
   }
 
 
   addToCart(item: InventoryItem) {
     this.cart.push(item);
     this.updateCart();
+    
+    this.addToBill(item);
   }
 
   removeFromCart(id: number){
@@ -71,11 +94,84 @@ export class InventoryComponent implements OnInit {
       }
     }
     this.updateCart();
+
+    this.removeFromBill(id);
   }
 
   updateCart(){
     this.cartDataSource.data = this.cart;
     this.cartDataSource.sort = this.cartSort;
     this.cartDataSource.paginator = this.cartPaginator;
+  }
+
+  addToBill(item: InventoryItem){
+    var addedToBill = false;
+    if(this.bill.length > 0){
+      for(let i=0; i<this.bill.length; i++)
+      {
+        if(this.bill[i].id == item.id){
+          this.bill[i].quantity += 1;
+          this.bill[i].total = this.bill[i].price * this.bill[i].quantity;
+          addedToBill = true;
+          break;
+        }
+      }
+    }
+    
+    if(!addedToBill){
+      let newBillItem: BillItem = {"id": item.id, "name": item.name, "price": item.price, "quantity": 1, "total": item.price};
+      this.bill.push(newBillItem);
+    }
+    
+    this.updateBill();
+  }
+
+  removeFromBill(id: number){
+    for(var i=0; i<this.bill.length; i++)
+    {
+      if((this.bill[i]).id == id){
+        if(this.bill[i].quantity == 1){
+          this.bill.splice(i,1);
+        }else{
+          this.bill[i].quantity -= 1;
+          this.bill[i].total = this.bill[i].price * this.bill[i].quantity;
+        }
+        break;
+      }
+    }
+    this.updateBill();
+  }
+
+  updateBill(){
+    this.calculateBillTotal();
+    this.billDataSource.data = this.bill;
+    this.billDataSource.sort = this.billSort;
+    this.billDataSource.paginator = this.billPaginator;
+  }
+
+  calculateBillTotal(){
+    this.totalBill = 0;
+    for(var i=0; i<this.bill.length; i++){
+      this.totalBill += (this.bill[i].total)
+    }
+  }
+
+  pay(){
+    this.displayQrCode();
+  }
+
+  checkout(){
+    this.paymentDone = true;
+    alert("Checkout completed!")
+    this.reset();
+  }
+
+  reset(){
+    this.imgSrc = "";
+    this.bill = [];
+    this.cart = [];
+    this.updateBill();
+    this.updateCart();
+    this.paymentDone = false;
   }
 }

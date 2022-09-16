@@ -9,6 +9,7 @@ export class InventoryService {
 
   constructor(private http: HttpClient) { }
   url: string = "../assets/dataset.json"
+  //observable
   getData() {
     return this.http.get<InventoryItem[]>(this.url);
   }
