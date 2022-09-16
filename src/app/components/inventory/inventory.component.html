@@ -8,20 +8,20 @@
       [dataSource]="inventoryDataSource"
       #InventorySort="matSort"
       class="mat-elevation-z8"
-      style="width: 100%;"
+      style="width: 100%; cursor: pointer;"
     >
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Items</th>
-        <td mat-cell *matCellDef="let row" (dblclick)="addToCart(row)" (click)="displayImg(row.imgname)">{{ row.name }}</td>
+        <td mat-cell *matCellDef="let row">{{ row.name }}</td>
       </ng-container>
 
       <ng-container matColumnDef="price">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Price ($)</th>
-        <td mat-cell *matCellDef="let row">{{ row.price }}</td>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Price</th>
+        <td mat-cell *matCellDef="let row">{{ row.price }} $</td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns" (click)="select(row.id, row.imgname)" (dblclick)="addToCart(row)" [ngClass]="{ 'selected': row.id === selectedRowId }"></tr>
     </table>
 
     <mat-paginator
@@ -36,23 +36,23 @@
   </div>
 
   <!-- Cart Table -->
-  <div class="flex-row-item" *ngIf="cart.length>0">
+  <div class="flex-row-item">
     <table
       mat-table
       matSort
       [dataSource]="cartDataSource"
       #CartSort="matSort"
       class="mat-elevation-z8"
-      style="width: 100%;"
+      style="width: 100%; cursor: pointer"
     >
 
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Cart</th>
-        <td mat-cell *matCellDef="let row" (dblclick)="removeFromCart(row.id)" (click)="displayCartImg(row.imgname)">{{ row.name }}</td>
+        <td mat-cell *matCellDef="let row" >{{ row.name }}</td>
       </ng-container>
    
       <tr mat-header-row *matHeaderRowDef="displayedColumnsCart"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumnsCart"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnsCart" (click)="select(row.uid, row.imgname)" (dblclick)="removeFromCart(row.id, row.uid)" [ngClass]="{ 'selected': row.uid === selectedRowId }"></tr>
     </table>
   
     <mat-paginator
@@ -60,13 +60,10 @@
       [pageSize]="3"
       [pageSizeOptions]="[3, 5, 10, 20, 100]"
     ></mat-paginator>
-    <div *ngIf="cartImgSrc.length>0">
-        <img width="200px" height="auto" src={{cartImgSrc}}>
-    </div>
   </div>
 
   <!-- Bill Table -->
-  <div class="flex-row-item" *ngIf="bill.length>0">
+  <div class="flex-row-item" >
     <table
       mat-table
       matSort
@@ -82,17 +79,17 @@
       </ng-container>
 
       <ng-container matColumnDef="price">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Price ($)</th>
-        <td mat-cell *matCellDef="let row">{{ row.price }}</td>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Price</th>
+        <td mat-cell *matCellDef="let row">{{ row.price }} $</td>
       </ng-container>
 
       <ng-container matColumnDef="quantity">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Quantity</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Qty</th>
         <td mat-cell *matCellDef="let row">{{ row.quantity }}</td>
       </ng-container>
 
       <ng-container matColumnDef="total">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Subtotal ($)</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Amount</th>
         <td mat-cell *matCellDef="let row">{{ row.total }}</td>
       </ng-container>
    
@@ -108,7 +105,7 @@
 
     <mat-card align="right">
         <mat-card-title>Total: {{totalBill}} $</mat-card-title>
-        <button mat-raised-button style="width: 25%;" color="primary" (click)="pay()">Pay</button> 
+        <button mat-raised-button style="width: 25%;" color="primary" [disabled]="totalBill == 0" (click)="pay()">Pay</button> 
         <div *ngIf="paymentInitiated">
           <div>
             <img style="padding-top: 10px;" width="200px" src={{qrcodeSrc}}>

@@ -5,6 +5,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 
 import { InventoryItem } from '../../models/InventoryItem.model';
+import { CartItem } from 'src/app/models/CartItem.model';
 import { BillItem } from 'src/app/models/BillItem.model';
 
 import { InventoryService } from '../../services/inventory.service';
@@ -22,16 +23,17 @@ export class InventoryComponent implements OnInit {
 
   @ViewChild('CartPaginator', {static: false}) cartPaginator!: MatPaginator;
   @ViewChild('CartSort', {static: false}) cartSort!: MatSort;
-  cartDataSource!: MatTableDataSource<InventoryItem>;
-  cart: InventoryItem[] = [];
+  cartDataSource!: MatTableDataSource<CartItem>;
+  cart: CartItem[] = [];
 
   @ViewChild('BillPaginator', {static: false}) billPaginator!: MatPaginator;
   @ViewChild('BillSort', {static: false}) billSort!: MatSort;
   billDataSource!: MatTableDataSource<BillItem>;
   bill: BillItem[] = [];
 
+  selectedRowId!: number;
+
   imgSrc = "";
-  cartImgSrc = "";
   qrcodeSrc = "";
   paymentInitiated = false;
 
@@ -60,34 +62,33 @@ export class InventoryComponent implements OnInit {
     })
   }
 
-  displayImg(imgName: string) {
-    this.cartImgSrc = "";
-    this.imgSrc = '../../assets/images/'+imgName;
-  }
-
-  displayCartImg(imgName: string) {
-    this.imgSrc = "";
-    this.cartImgSrc = '../../assets/images/'+imgName;
-  }
-
   displayQrCode(){
     this.qrcodeSrc = '../../assets/images/qrcode.png';
   }
 
-
   addToCart(item: InventoryItem) {
-    this.cart.push(item);
+    let suffix = "1";   //by default 1 for 1st occurance of given item id
+    for(var i=this.cart.length-1; i>=0; i--){
+      if(this.cart[i].id == item.id){
+        suffix = (this.cart[i].uid%10 + 1).toString();
+        break;
+      }
+    }
+    //unique id for every cart element
+    let uid: number = parseInt(item.id+suffix);
+    let newCartItem: CartItem = {"uid": uid,"id": item.id, "name": item.name, "imgname": item.imgname, "price": item.price};
+    this.cart.push(newCartItem);
     this.updateCart();
     
     this.addToBill(item);
   }
 
-  removeFromCart(id: number){
+  removeFromCart(id:number, uid: number){
     for(var i=0; i<this.cart.length; i++)
     {
-      if((this.cart[i]).id == id){
+      if((this.cart[i]).uid == uid){
         let item = (this.cart[i].name);
-        this.cartImgSrc = "";
+        this.imgSrc = "";
         this.cart.splice(i,1);
         alert(item+" has been removed!");
         break;
@@ -174,4 +175,9 @@ export class InventoryComponent implements OnInit {
     this.updateCart();
     this.paymentInitiated = false;
   } 
+
+  select(rowId: number, imgName: string){    
+    this.selectedRowId = rowId;
+    this.imgSrc = '../../assets/images/'+imgName;
+    }
 }
