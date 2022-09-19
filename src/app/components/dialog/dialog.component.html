@@ -1,0 +1,47 @@
+<img src="../../../assets/images/walgreens.png" width="200px">
+<mat-dialog-content class="mat-typography">
+    <table
+    mat-table
+    matSort
+    [dataSource]="receivedData.bill"
+    #BillSort="matSort"
+    
+    style="width: 100%;"
+  >
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Items Description</th>
+      <td mat-cell *matCellDef="let row">{{ row.name }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="price">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Price</th>
+      <td mat-cell *matCellDef="let row">{{ row.price| currency : 'USD' :'symbol': '1.2'  }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="quantity">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Qty</th>
+      <td mat-cell *matCellDef="let row">{{ row.quantity }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="total">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Amount</th>
+      <td mat-cell *matCellDef="let row">{{ row.total | currency : 'USD' : 'symbol': '1.2'  }}</td>
+    </ng-container>
+ 
+    <tr mat-header-row *matHeaderRowDef="receivedData.displayedColumnsBill"></tr>
+    <tr mat-row *matRowDef="let row; columns: receivedData.displayedColumnsBill"></tr>
+  </table>
+
+  <div style="margin-top: 10px;" align="right">
+    <h1>Total: {{receivedData.total | currency: 'USD' : 'symbol' : '1.2-2' }}</h1>
+    <img src="../../../assets/images/qrcode.png" width="200px">
+
+    <h2>Thankyou for shopping at Walgreens</h2>
+    <h3>{{currentDateTime | date: 'medium'}}</h3>
+  </div>
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Pay & Finish</button>
+</mat-dialog-actions>

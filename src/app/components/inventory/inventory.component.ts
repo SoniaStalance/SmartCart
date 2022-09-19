@@ -4,10 +4,13 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import {MatDialog} from '@angular/material/dialog';
 
 import { InventoryItem } from '../../models/InventoryItem.model';
 import { CartItem } from 'src/app/models/CartItem.model';
 import { BillItem } from 'src/app/models/BillItem.model';
+
+import { DialogComponent } from '../dialog/dialog.component';
 
 import { InventoryService } from '../../services/inventory.service';
 
@@ -35,9 +38,6 @@ export class InventoryComponent implements OnInit {
   selectedRowId!: number;
 
   imgSrc = "";
-  qrcodeSrc = "";
-  paymentInitiated = false;
-
   totalBill = 0;
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
@@ -45,7 +45,11 @@ export class InventoryComponent implements OnInit {
   displayedColumnsCart = ['name'];
   displayedColumnsBill = ['name','price','quantity','total'];
 
-  constructor(private service: InventoryService, private snackBar: MatSnackBar) {
+  constructor(
+    private service: InventoryService,
+    private snackBar: MatSnackBar,
+    public dialog: MatDialog
+    ) {
     this.inventoryDataSource = new MatTableDataSource;
     this.cartDataSource = new MatTableDataSource;
     this.billDataSource = new MatTableDataSource;
@@ -61,10 +65,6 @@ export class InventoryComponent implements OnInit {
       this.inventoryDataSource.sort = this.inventorySort;
       this.inventoryDataSource.paginator = this.inventoryPaginator;
     })
-  }
-
-  displayQrCode(){
-    this.qrcodeSrc = '../../assets/images/qrcode.png';
   }
 
   addToCart(item: InventoryItem) {
@@ -165,13 +165,22 @@ export class InventoryComponent implements OnInit {
   }
 
   pay(){
-    this.paymentInitiated = true;
-    this.displayQrCode();
-  }
+    const dialogRef = this.dialog.open(DialogComponent, {
+      data: {
+        bill: this.bill,
+        total: this.totalBill,
+        displayedColumnsBill: this.displayedColumnsBill
+      }
+    });
 
-  checkout(){
-    alert("Checkout completed!")
-    this.reset();
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        this.openSnackBar("Payment completed successfully", "green")
+        this.reset();
+      }else{
+        this.openSnackBar("Payment not done", "red")
+      }
+    });
   }
 
   reset(){
@@ -181,7 +190,6 @@ export class InventoryComponent implements OnInit {
     this.totalBill = 0;
     this.updateBill();
     this.updateCart();
-    this.paymentInitiated = false;
   } 
 
   select(rowId: number, itemId: number){    

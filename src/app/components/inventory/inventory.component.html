@@ -15,7 +15,7 @@
 
       <ng-container matColumnDef="price">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Price</th>
-        <td mat-cell *matCellDef="let row">{{ row.price | currency : 'USD' : true: '1.2' }}</td>
+        <td mat-cell *matCellDef="let row">{{ row.price | currency : 'USD' : 'symbol': '1.2' }}</td>
       </ng-container>
 
       <ng-container matColumnDef="discount">
@@ -77,13 +77,13 @@
     >
 
       <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Billed Items</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Items Description</th>
         <td mat-cell *matCellDef="let row">{{ row.name }}</td>
       </ng-container>
 
       <ng-container matColumnDef="price">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Price</th>
-        <td mat-cell *matCellDef="let row">{{ row.price| currency : 'USD' : true: '1.2'  }}</td>
+        <td mat-cell *matCellDef="let row">{{ row.price| currency : 'USD' :'symbol': '1.2'  }}</td>
       </ng-container>
 
       <ng-container matColumnDef="quantity">
@@ -93,7 +93,7 @@
 
       <ng-container matColumnDef="total">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Amount</th>
-        <td mat-cell *matCellDef="let row">{{ row.total | currency : 'USD' : true: '1.2'  }}</td>
+        <td mat-cell *matCellDef="let row">{{ row.total | currency : 'USD' : 'symbol': '1.2'  }}</td>
       </ng-container>
    
       <tr mat-header-row *matHeaderRowDef="displayedColumnsBill"></tr>
@@ -107,17 +107,9 @@
     ></mat-paginator>
 
     <div align="right" style="background-color: white;" *ngIf="totalBill > 0">
-        <div><h2>Total: {{totalBill | currency : 'USD' : true: '1.2' }}</h2></div>
-        <div><button mat-raised-button style="width: 25%;" color="primary" (click)="pay()">Pay</button></div>
-        <div *ngIf="paymentInitiated">
-          <div>
-            <img style="padding-top: 10px;" width="200px" src={{qrcodeSrc}}>
-          </div>
-          <div>
-            <button mat-raised-button (click)="checkout()">Finish</button>
-          </div>
-        </div> 
-      </div>
+          <h2 style="margin-right: 10px;">Total: {{totalBill | currency : 'USD' : 'symbol' : '1.2' }}</h2>
+          <button mat-raised-button style="width: 40%; margin-right: 10px; margin-bottom: 10px;" color="primary" (click)="pay()">Pay</button>
+    </div>
   </div>
 </div>
   

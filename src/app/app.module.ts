@@ -14,13 +14,18 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialogModule } from '@angular/material/dialog';
+import { DialogComponent } from './components/dialog/dialog.component';
+import { DatePipe } from '@angular/common';
 
 @NgModule({
   declarations: [
     AppComponent,
-    InventoryComponent
+    InventoryComponent,
+    DialogComponent
   ],
   imports: [
+    MatDialogModule,
     MatSnackBarModule,
     MatButtonModule,
     MatTableModule,
@@ -33,7 +38,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     MatToolbarModule,
     HttpClientModule
   ],
-  providers: [],
+  providers: [DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
