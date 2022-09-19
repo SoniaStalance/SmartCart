@@ -112,7 +112,7 @@ export class InventoryComponent implements OnInit {
     var discount = 0;
     if(item.discount > 0)
     {
-      discount = item.price * (item.discount/100.00);
+      discount = item.price * item.discount;
     }
 
     var priceAfterDiscount = item.price - discount;

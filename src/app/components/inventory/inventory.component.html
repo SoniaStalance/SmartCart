@@ -15,12 +15,12 @@
 
       <ng-container matColumnDef="price">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Price</th>
-        <td mat-cell *matCellDef="let row">{{ row.price }} $</td>
+        <td mat-cell *matCellDef="let row">{{ row.price | currency : 'USD' : true: '1.2' }}</td>
       </ng-container>
 
       <ng-container matColumnDef="discount">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Discount</th>
-        <td mat-cell *matCellDef="let row"><span *ngIf="row.discount>0">{{ row.discount }} %</span></td>
+        <td mat-cell *matCellDef="let row"><span *ngIf="row.discount>0">{{ row.discount | percent }}</span></td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -83,7 +83,7 @@
 
       <ng-container matColumnDef="price">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Price</th>
-        <td mat-cell *matCellDef="let row">{{ row.price }} $</td>
+        <td mat-cell *matCellDef="let row">{{ row.price| currency : 'USD' : true: '1.2'  }}</td>
       </ng-container>
 
       <ng-container matColumnDef="quantity">
@@ -93,7 +93,7 @@
 
       <ng-container matColumnDef="total">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Amount</th>
-        <td mat-cell *matCellDef="let row">{{ row.total }} $</td>
+        <td mat-cell *matCellDef="let row">{{ row.total | currency : 'USD' : true: '1.2'  }}</td>
       </ng-container>
    
       <tr mat-header-row *matHeaderRowDef="displayedColumnsBill"></tr>
@@ -107,7 +107,7 @@
     ></mat-paginator>
 
     <div align="right" style="background-color: white;" *ngIf="totalBill > 0">
-        <div><h2>Total: {{totalBill}} $</h2></div>
+        <div><h2>Total: {{totalBill | currency : 'USD' : true: '1.2' }}</h2></div>
         <div><button mat-raised-button style="width: 25%;" color="primary" (click)="pay()">Pay</button></div>
         <div *ngIf="paymentInitiated">
           <div>
