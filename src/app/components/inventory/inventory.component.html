@@ -19,12 +19,12 @@
 
       <ng-container matColumnDef="price">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Price</th>
-        <td mat-cell *matCellDef="let row">{{ row.price | currency : 'USD' : 'symbol': '1.2' }}</td>
+        <td mat-cell *matCellDef="let row" class="left-border-line">{{ row.price | currency : 'USD' : 'symbol': '1.2' }}</td>
       </ng-container>
 
       <ng-container matColumnDef="discount">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Discount</th>
-        <td mat-cell *matCellDef="let row"><span *ngIf="row.discount>0">{{ row.discount | percent }}</span></td>
+        <td mat-cell *matCellDef="let row" class="left-border-line"><span *ngIf="row.discount>0" class="discount">{{ row.discount | percent }}</span></td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -94,17 +94,17 @@
 
       <ng-container matColumnDef="price">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Price</th>
-        <td mat-cell *matCellDef="let row">{{ row.price| currency : 'USD' :'symbol': '1.2'  }}</td>
+        <td mat-cell *matCellDef="let row" class="left-border-line">{{ row.price| currency : 'USD' :'symbol': '1.2'  }}</td>
       </ng-container>
 
       <ng-container matColumnDef="quantity">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Qty</th>
-        <td mat-cell *matCellDef="let row">{{ row.quantity }}</td>
+        <td mat-cell *matCellDef="let row" class="left-border-line">{{ row.quantity }}</td>
       </ng-container>
 
       <ng-container matColumnDef="total">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Amount</th>
-        <td mat-cell *matCellDef="let row">{{ row.total | currency : 'USD' : 'symbol': '1.2'  }}</td>
+        <td mat-cell *matCellDef="let row" class="left-border-line">{{ row.total | currency : 'USD' : 'symbol': '1.2'  }}</td>
       </ng-container>
    
       <tr mat-header-row *matHeaderRowDef="displayedColumnsBill"></tr>

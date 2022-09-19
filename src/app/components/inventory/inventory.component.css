@@ -41,3 +41,14 @@
   color: maroon;
   background-color: white;
 }
+
+.discount{
+  margin-left: 10px;
+  background-color: yellow;
+  border-radius: 100%;
+  padding: 10px;
+}
+.left-border-line{
+  text-align: center;
+  border-left: 1px solid rgba(10, 11, 49, 0.20);
+}
