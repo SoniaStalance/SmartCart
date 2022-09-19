@@ -3,6 +3,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { InventoryItem } from '../../models/InventoryItem.model';
 import { CartItem } from 'src/app/models/CartItem.model';
@@ -40,11 +41,11 @@ export class InventoryComponent implements OnInit {
   totalBill = 0;
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns = ['name','price'];
+  displayedColumns = ['name','price', 'discount'];
   displayedColumnsCart = ['name'];
   displayedColumnsBill = ['name','price','quantity','total'];
 
-  constructor(private service: InventoryService) {
+  constructor(private service: InventoryService, private snackBar: MatSnackBar) {
     this.inventoryDataSource = new MatTableDataSource;
     this.cartDataSource = new MatTableDataSource;
     this.billDataSource = new MatTableDataSource;
@@ -76,27 +77,28 @@ export class InventoryComponent implements OnInit {
     }
     //unique id for every cart element
     let uid: number = parseInt(item.id+suffix);
-    let newCartItem: CartItem = {"uid": uid,"id": item.id, "name": item.name, "imgname": item.imgname, "price": item.price};
+    let newCartItem: CartItem = {"uid": uid,"id": item.id, "name": item.name};
     this.cart.push(newCartItem);
     this.updateCart();
     
     this.addToBill(item);
+    this.openSnackBar(item.name+" was added to cart", "green");
   }
 
   removeFromCart(id:number, uid: number){
+    var item;
     for(var i=0; i<this.cart.length; i++)
     {
       if((this.cart[i]).uid == uid){
-        let item = (this.cart[i].name);
+        item = (this.cart[i].name);
         this.imgSrc = "";
         this.cart.splice(i,1);
-        alert(item+" has been removed!");
         break;
       }
     }
     this.updateCart();
-
     this.removeFromBill(id);
+    this.openSnackBar(item+" was removed from cart", "red");
   }
 
   updateCart(){
@@ -107,12 +109,20 @@ export class InventoryComponent implements OnInit {
 
   addToBill(item: InventoryItem){
     var addedToBill = false;
+    var discount = 0;
+    if(item.discount > 0)
+    {
+      discount = item.price * (item.discount/100.00);
+    }
+
+    var priceAfterDiscount = item.price - discount;
+
     if(this.bill.length > 0){
       for(let i=0; i<this.bill.length; i++)
       {
         if(this.bill[i].id == item.id){
           this.bill[i].quantity += 1;
-          this.bill[i].total = this.bill[i].price * this.bill[i].quantity;
+          this.bill[i].total = priceAfterDiscount * this.bill[i].quantity;
           addedToBill = true;
           break;
         }
@@ -120,9 +130,12 @@ export class InventoryComponent implements OnInit {
     }
     
     if(!addedToBill){
-      let newBillItem: BillItem = {"id": item.id, "name": item.name, "price": item.price, "quantity": 1, "total": item.price};
+      let newBillItem: BillItem = {"id": item.id, "name": item.name, "price": priceAfterDiscount, "quantity": 1, "total": priceAfterDiscount};
       this.bill.push(newBillItem);
     }
+
+    //updating total
+    this.totalBill += priceAfterDiscount;
     
     this.updateBill();
   }
@@ -131,6 +144,8 @@ export class InventoryComponent implements OnInit {
     for(var i=0; i<this.bill.length; i++)
     {
       if((this.bill[i]).id == id){
+        //updating total
+        this.totalBill -= this.bill[i].price;
         if(this.bill[i].quantity == 1){
           this.bill.splice(i,1);
         }else{
@@ -144,17 +159,9 @@ export class InventoryComponent implements OnInit {
   }
 
   updateBill(){
-    this.calculateBillTotal();
     this.billDataSource.data = this.bill;
     this.billDataSource.sort = this.billSort;
     this.billDataSource.paginator = this.billPaginator;
-  }
-
-  calculateBillTotal(){
-    this.totalBill = 0;
-    for(var i=0; i<this.bill.length; i++){
-      this.totalBill += (this.bill[i].total)
-    }
   }
 
   pay(){
@@ -171,13 +178,43 @@ export class InventoryComponent implements OnInit {
     this.imgSrc = "";
     this.bill = [];
     this.cart = [];
+    this.totalBill = 0;
     this.updateBill();
     this.updateCart();
     this.paymentInitiated = false;
   } 
 
-  select(rowId: number, imgName: string){    
-    this.selectedRowId = rowId;
-    this.imgSrc = '../../assets/images/'+imgName;
+  select(rowId: number, itemId: number){    
+    this.selectedRowId = rowId;  
+    this.imgSrc = '../../assets/images/'+this.getImgName(itemId);
     }
+
+  openSnackBar(message: string, color: string) {
+    this.snackBar.open(message, "", {
+      duration: 3000,
+      panelClass: [color]
+    });
+  }
+
+  getImgName(id: number): string{
+    var imgName = "";
+    for(var i=0;i<this.inventory.length; i++){
+      if(this.inventory[i].id == id){
+         imgName += this.inventory[i].imgname;
+         break;
+      }
+    }
+    return imgName;
+  }
+
+  getItemPrice(id: number){
+    var price = 0;
+    for(var i=0;i<this.inventory.length; i++){
+      if(this.inventory[i].id == id){
+         price = this.inventory[i].price;
+         break;
+      }
+    }
+    return price;
+  }
 }

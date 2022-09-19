@@ -26,3 +26,11 @@
 .selected {
   background-color: lightgrey;
 }
+::ng-deep .green{
+  color: darkgreen;
+  background-color: white;
+}
+::ng-deep .red{
+  color: maroon;
+  background-color: white;
+}

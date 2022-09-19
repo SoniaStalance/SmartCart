@@ -13,6 +13,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { MatButtonModule } from '@angular/material/button';
     InventoryComponent
   ],
   imports: [
+    MatSnackBarModule,
     MatButtonModule,
     MatTableModule,
     MatCardModule,

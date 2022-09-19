@@ -1,5 +1,4 @@
-<div class="flex-row-container" style="padding:5%">
-
+<div class="flex-row-container" style="padding:5%; ">
   <!--Inventory Table-->
   <div class="flex-row-item">
     <table
@@ -7,7 +6,6 @@
       matSort
       [dataSource]="inventoryDataSource"
       #InventorySort="matSort"
-      class="mat-elevation-z8"
       style="width: 100%; cursor: pointer;"
     >
       <ng-container matColumnDef="name">
@@ -20,8 +18,13 @@
         <td mat-cell *matCellDef="let row">{{ row.price }} $</td>
       </ng-container>
 
+      <ng-container matColumnDef="discount">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Discount</th>
+        <td mat-cell *matCellDef="let row"><span *ngIf="row.discount>0">{{ row.discount }} %</span></td>
+      </ng-container>
+
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns" (click)="select(row.id, row.imgname)" (dblclick)="addToCart(row)" [ngClass]="{ 'selected': row.id === selectedRowId }"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns" (click)="select(row.id, row.id)" (dblclick)="addToCart(row)" [ngClass]="{ 'selected': row.id === selectedRowId }"></tr>
     </table>
 
     <mat-paginator
@@ -30,7 +33,7 @@
       [pageSizeOptions]="[3, 5, 10, 20, 100]"
     ></mat-paginator>
     
-    <div *ngIf="imgSrc.length>0">
+    <div align="center" style="background-color: white" *ngIf="imgSrc.length>0">
       <img width="200px" height="auto" src={{imgSrc}}>
     </div>
   </div>
@@ -42,7 +45,7 @@
       matSort
       [dataSource]="cartDataSource"
       #CartSort="matSort"
-      class="mat-elevation-z8"
+      
       style="width: 100%; cursor: pointer"
     >
 
@@ -52,7 +55,7 @@
       </ng-container>
    
       <tr mat-header-row *matHeaderRowDef="displayedColumnsCart"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumnsCart" (click)="select(row.uid, row.imgname)" (dblclick)="removeFromCart(row.id, row.uid)" [ngClass]="{ 'selected': row.uid === selectedRowId }"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnsCart" (click)="select(row.uid, row.id)" (dblclick)="removeFromCart(row.id, row.uid)" [ngClass]="{ 'selected': row.uid === selectedRowId }"></tr>
     </table>
   
     <mat-paginator
@@ -69,7 +72,7 @@
       matSort
       [dataSource]="billDataSource"
       #BillSort="matSort"
-      class="mat-elevation-z8"
+      
       style="width: 100%;"
     >
 
@@ -90,7 +93,7 @@
 
       <ng-container matColumnDef="total">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Amount</th>
-        <td mat-cell *matCellDef="let row">{{ row.total }}</td>
+        <td mat-cell *matCellDef="let row">{{ row.total }} $</td>
       </ng-container>
    
       <tr mat-header-row *matHeaderRowDef="displayedColumnsBill"></tr>
@@ -103,9 +106,9 @@
       [pageSizeOptions]="[3, 5, 10, 20, 100]"
     ></mat-paginator>
 
-    <mat-card align="right">
-        <mat-card-title>Total: {{totalBill}} $</mat-card-title>
-        <button mat-raised-button style="width: 25%;" color="primary" [disabled]="totalBill == 0" (click)="pay()">Pay</button> 
+    <div align="right" style="background-color: white;" *ngIf="totalBill > 0">
+        <div><h2>Total: {{totalBill}} $</h2></div>
+        <div><button mat-raised-button style="width: 25%;" color="primary" (click)="pay()">Pay</button></div>
         <div *ngIf="paymentInitiated">
           <div>
             <img style="padding-top: 10px;" width="200px" src={{qrcodeSrc}}>
@@ -114,7 +117,7 @@
             <button mat-raised-button (click)="checkout()">Finish</button>
           </div>
         </div> 
-    </mat-card>
+      </div>
   </div>
 </div>
   
