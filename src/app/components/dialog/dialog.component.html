@@ -6,6 +6,7 @@
     [dataSource]="receivedData.bill"
     #BillSort="matSort"
     
+    
     style="width: 100%;"
   >
     <ng-container matColumnDef="name">
@@ -42,6 +43,6 @@
 
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>Cancel</button>
-  <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Pay & Finish</button>
+  <button mat-raised-button mat-dialog-close>Cancel</button>
+  <button mat-raised-button color="primary" [mat-dialog-close]="true" cdkFocusInitial>Pay & Finish</button>
 </mat-dialog-actions>

@@ -1,6 +1,13 @@
 .full-width-table {
   width: 100%;
 }
+.item-header{
+  background-color:#C2E8FF; 
+  border-radius: 10px; 
+  padding: 10px; 
+  color:#323264; 
+  text-align: center;
+}
 .flex-row-container {
   display: flex;
   flex-direction: row;

@@ -67,7 +67,15 @@ export class InventoryComponent implements OnInit {
     })
   }
 
+  playSound(filename: string){
+    var audio = new Audio();
+    audio.src = "../../assets/sounds/"+filename;
+    audio.load();
+    audio.play();
+  }
+
   addToCart(item: InventoryItem) {
+    this.playSound("add.wav");
     let suffix = "1";   //by default 1 for 1st occurance of given item id
     for(var i=this.cart.length-1; i>=0; i--){
       if(this.cart[i].id == item.id){
@@ -86,6 +94,7 @@ export class InventoryComponent implements OnInit {
   }
 
   removeFromCart(id:number, uid: number){
+    this.playSound("remove.wav");
     var item;
     for(var i=0; i<this.cart.length; i++)
     {
@@ -175,6 +184,7 @@ export class InventoryComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if(result){
+        this.playSound("success.wav")
         this.openSnackBar("Payment completed successfully", "green")
         this.reset();
       }else{
