@@ -25,15 +25,6 @@ export class InventoryComponent implements OnInit {
   inventoryDataSource!: MatTableDataSource<InventoryItem>;
   inventory: InventoryItem[] = [];
 
-  @ViewChild('OffersPaginator', {static: true}) offersPaginator!: MatPaginator;
-  @ViewChild('OffersSort', {static: true}) offersSort!: MatSort;
-  offersDataSource!: MatTableDataSource<InventoryItem>;
-  offers: InventoryItem[] = [];
-
-  @ViewChild('WishlistPaginator', {static: true}) wishlistPaginator!: MatPaginator;
-  @ViewChild('WishlistSort', {static: true}) wishlistSort!: MatSort;
-  wishlistDataSource!: MatTableDataSource<InventoryItem>;
-
   @ViewChild('CartPaginator', {static: false}) cartPaginator!: MatPaginator;
   @ViewChild('CartSort', {static: false}) cartSort!: MatSort;
   cartDataSource!: MatTableDataSource<CartItem>;
@@ -53,7 +44,7 @@ export class InventoryComponent implements OnInit {
   totalBill = 0;
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns = ['name','price', 'discount'];
+  displayedColumns = ['added', 'name','price', 'discount'];
   displayedColumnsCart = ['name'];
   displayedColumnsBill = ['name','price','quantity','total'];
 
@@ -63,8 +54,6 @@ export class InventoryComponent implements OnInit {
     public dialog: MatDialog
     ) {
     this.inventoryDataSource = new MatTableDataSource;
-    this.offersDataSource = new MatTableDataSource;
-    this.wishlistDataSource = new MatTableDataSource;
     this.cartDataSource = new MatTableDataSource;
     this.billDataSource = new MatTableDataSource;
   }
@@ -74,15 +63,10 @@ export class InventoryComponent implements OnInit {
     observable.subscribe((dataArray: InventoryItem[])=>{
       for(var i=0; i<dataArray.length; i++){
         this.inventory.push(dataArray[i]);
-        if(dataArray[i].discount > 0) this.offers.push(dataArray[i]);
       }
       this.inventoryDataSource.data = this.inventory;
       this.inventoryDataSource.sort = this.inventorySort;
       this.inventoryDataSource.paginator = this.inventoryPaginator;
-
-      this.offersDataSource.data = this.offers;
-      this.offersDataSource.sort = this.offersSort;
-      this.offersDataSource.paginator = this.offersPaginator;
     })
   }
 
@@ -95,6 +79,13 @@ export class InventoryComponent implements OnInit {
 
   addToCart(item: InventoryItem) {
     this.playSound("add.wav");
+    //updated added to cart in inventory
+    this.inventory.forEach((inv)=>{
+      if(inv.id == item.id && inv.cart == false)
+        inv.cart = true;
+    })
+
+
     let suffix = "1";   //by default 1 for 1st occurance of given item id
     for(var i=this.cart.length-1; i>=0; i--){
       if(this.cart[i].id == item.id){
@@ -176,6 +167,12 @@ export class InventoryComponent implements OnInit {
         this.totalBill -= this.bill[i].price;
         if(this.bill[i].quantity == 1){
           this.bill.splice(i,1);
+
+          this.inventory.forEach((inv)=>{
+            if(inv.id == id && inv.cart == true)
+              inv.cart = false;
+          })
+
         }else{
           this.bill[i].quantity -= 1;
           this.bill[i].total = this.bill[i].price * this.bill[i].quantity;
@@ -249,7 +246,7 @@ export class InventoryComponent implements OnInit {
         })
       }
     }
-    
+
     this.inventoryDataSource.data = list;
   }
 
@@ -292,5 +289,13 @@ export class InventoryComponent implements OnInit {
       }
     }
     return price;
+  }
+
+  //does not update in dataset
+  updateWishlist(id: number){
+    this.inventory.forEach((item)=>{
+      if(item.id == id)
+        item.wishlist = !item.wishlist;
+    })
   }
 }

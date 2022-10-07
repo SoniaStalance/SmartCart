@@ -44,9 +44,18 @@
           #InventorySort="matSort"
           style="width: 100%; cursor: pointer;"
         >
+          <ng-container matColumnDef="added">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+            <td mat-cell *matCellDef="let row">
+              <img (click)="updateWishlist(row.id)" matTooltip="Remove from wishlist" *ngIf="row.wishlist == true && row.cart == false" src="../../../assets/images/heart.png" width="15px" height="auto">
+              <img (click)="updateWishlist(row.id)" matTooltip="Add to wishlist" *ngIf="row.wishlist == false && row.cart == false" src="../../../assets/images/greyheart.png" width="15px" height="auto">
+              <img *ngIf="row.cart == true" src="../../../assets/images/tick.png" width="15px" height="auto" >
+            </td>
+          </ng-container>
+
           <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Items</th>
-            <td mat-cell *matCellDef="let row">{{ row.name }}</td>
+            <td mat-cell  matTooltip="Double tab to add to cart" *matCellDef="let row">{{ row.name }}</td>
           </ng-container>
 
           <ng-container matColumnDef="price">
@@ -99,7 +108,7 @@
       </ng-container>
    
       <tr mat-header-row *matHeaderRowDef="displayedColumnsCart"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumnsCart" (click)="select(row.uid, row.id)" (dblclick)="removeFromCart(row.id, row.uid)" [ngClass]="{ 'selected': row.uid === selectedRowId }"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnsCart" (click)="select(row.uid, row.id)" (dblclick)="removeFromCart(row.id, row.uid)" [ngClass]="{ 'selected': row.uid === selectedRowId }" matTooltip="Double tab to remove"></tr>
     </table>
   
     <mat-paginator

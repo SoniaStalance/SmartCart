@@ -17,6 +17,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatTooltipModule } from '@angular/material/tooltip'
 import { DialogComponent } from './components/dialog/dialog.component';
 import { DatePipe } from '@angular/common';
 
@@ -27,6 +28,7 @@ import { DatePipe } from '@angular/common';
     DialogComponent
   ],
   imports: [
+    MatTooltipModule,
     MatButtonToggleModule,
     MatTabsModule,
     MatDialogModule,
