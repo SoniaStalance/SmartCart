@@ -1,20 +1,55 @@
 [
-    { "id": 1000, "name": "Hard Halloween Caramel Candies", "imgname": "Caramel.jpg", "price": 2.99 ,"discount": 0},
-    { "id": 1001, "name": "Nourishing Hand Sanitizer Lavender and Chamomile", "imgname": "Sanitizer.jpg", "price": 4.00 ,"discount": 0},
-    { "id": 1002, "name": "Stainless Steel Travel Mug", "imgname": "Mug.jpg", "price": 6.00 ,"discount": 0},
-    { "id": 1003, "name": "Basic Backpack", "imgname": "Bag.jpg", "price": 7.00 ,"discount": 0},
-    { "id": 1004, "name": "Moisture Filler Facial Day Night Cream", "imgname": "Loreal.jpg", "price": 12.00 ,"discount": 0},
-    { "id": 1005, "name": "Colgate Toothpaste", "imgname": "Colgate.jpg", "price":  1.00,"discount": 0},
-    { "id": 1006, "name": "Zinc 50 mg Caplets", "imgname": "Zinc.jpg", "price": 6.00 ,"discount": 0},
-    { "id": 1007, "name": "Pepsi Soda", "imgname": "Pepsi.jpg", "price": 7.00 ,"discount": 0},
-    { "id": 1008, "name": "Gift Card", "imgname": "Card.jpg", "price": 100.00, "discount": 0.25},
-    { "id": 1009, "name": "Sensitive Wipes", "imgname": "Wipes.jpg", "price": 3.00 ,"discount": 0},
-    { "id": 1010, "name": "Fingertip Pulse Oximeter, Deluxe", "imgname": "Oximeter.jpg", "price":  102.00, "discount": 0.5},
-    { "id": 1011, "name": "Double Treat Bones", "imgname": "Bones.jpg", "price": 5.00 ,"discount": 0},
-    { "id": 1012, "name": "Horse Jumping Playset HDJ84", "imgname": "Doll.jpg", "price": 9.00 ,"discount": 0},
-    { "id": 1013, "name": "Dry Erase Markers Fine Tip", "imgname": "Marker.jpg", "price": 7.00 ,"discount": 0},
-    { "id": 1014, "name": "Hearing Aid Batteries Size 312, Brown Tab 312", "imgname": "Battery.jpg", "price": 27.00 ,"discount": 0},
-    { "id": 1015, "name": "JBuds Pro Signature Earbuds", "imgname": "Earbuds.jpg", "price": 14.00 ,"discount": 0},
-    { "id": 1016, "name": "Multi-purpose Contact Lens Solution", "imgname": "ContactLens.jpg", "price": 8.99 ,"discount": 0},
-    { "id": 1017, "name": "Ultra Oxi Liquid Detergent", "imgname": "Tide.jpg", "price": 5.00, "discount": 0.25  }
+    { "id": 1000, "name": "Hard Halloween Caramel Candies", "imgname": "Caramel.jpg", "price": 2.99 ,"discount": 0,"category": ["christmas","birthday","thanksgiving"],
+     "description": "Soft and creamy,Made with real butter and fresh creamOne-of-a-kind taste", "lane": 1, "shelf": 10, "wishlist": false},
+
+    { "id": 1001, "name": "Nourishing Hand Sanitizer Lavender and Chamomile", "imgname": "Sanitizer.jpg", "price": 4.00 ,"discount": 0,"category": [], 
+    "description": " Dove Lavender and Chamomile Nourishing Hand Sanitizer is 99.99% effective against many common germs and bacteria and provides 8 hours of moisturization.", "lane": 2, "shelf": 13, "wishlist": false},
+
+    { "id": 1002, "name": "Stainless Steel Travel Mug", "imgname": "Mug.jpg", "price": 6.00 ,"discount": 0,
+    "category": [],"description": " Stainless steel,16 oz,Not microwaveable", "lane": 3, "shelf": 15, "wishlist": false},
+
+    { "id": 1003, "name": "Basic Backpack", "imgname": "Bag.jpg", "price": 7.00 ,"discount": 0,
+    "category": ["birthday"],"description": "Double adjustable straps, top handle,Cargo pocket on side,Side zip pouch for small accessories ", "lane": 4, "shelf": 17, "wishlist": false},
+
+    { "id": 1004, "name": "Moisture Filler Facial Day Night Cream", "imgname": "Loreal.jpg", "price": 12.00 ,"discount": 0,
+    "category": [],"description": " Intense Hydration face cream that helps fill in lines and wrinkles,Smooths wrinkles for smoother, plumper face skin.", "lane": 5, "shelf": 1, "wishlist": false},
+
+    { "id": 1005, "name": "Colgate Toothpaste", "imgname": "Colgate.jpg", "price":  1.00,"discount": 0,
+    "category": [],"description": " Whole Mouth Health protects teeth, tongue, cheeks, and gums. Helps reduce plaque that leads to gingivitis;helps relieve sensitivity with continued use.", "lane": 1, "shelf": 5, "wishlist": true},
+
+    { "id": 1006, "name": "Zinc 50 mg Caplets", "imgname": "Zinc.jpg", "price": 6.00 ,"discount": 0,
+    "category": [],"description": " Zinc Caplets by Nature's Bounty provide more than your daily requirement of this essential mineral for immune support and overall health", "lane": 3, "shelf": 13, "wishlist": false},
+    
+    { "id": 1007, "name": "Pepsi Soda", "imgname": "Pepsi.jpg", "price": 7.00 ,"discount": 0,
+    "category": ["birthday"],"description": " Bold, refreshing, robust cola,Very low sodium,No fat", "lane": 4, "shelf": 15, "wishlist": false},
+
+    { "id": 1008, "name": "Gift Card", "imgname": "Card.jpg", "price": 100.00, "discount": 0.25,"category": ["christmas","birthday","thanksgiving"],"description": "surprising gifts inside this package", "lane": 2, "shelf": 10, "wishlist": true},
+
+    { "id": 1009, "name": "Sensitive Wipes", "imgname": "Wipes.jpg", "price": 3.00 ,"discount": 0,
+    "category": ["birthday","thanksgiving"],"description": " Less wiping for gentle cleaning,Dermatologist tested,Perfume free and hypoallergenic.", "lane": 4, "shelf":2, "wishlist": false},
+    
+    { "id": 1010, "name": "Fingertip Pulse Oximeter, Deluxe", "imgname": "Oximeter.jpg", "price":  102.00, "discount": 0.5,
+    "category": [],"description": "Measures oxygen level & heart rate,Portable, lightweight & convenient,For sports & recreational use", "lane": 4, "shelf": 13, "wishlist": false},
+    
+    { "id": 1011, "name": "Double Treat Bones", "imgname": "Bones.jpg", "price": 5.00 ,"discount": 0,
+    "category": [],"description": "Chicken Flavor Double Treat Bones,Natural Chewing Action, Helps Reduce Tartar Buildup,Rawhide Free", "lane": 1, "shelf": 6, "wishlist": false},
+    
+    { "id": 1012, "name": "Horse Jumping Playset HDJ84", "imgname": "Doll.jpg", "price": 9.00 ,"discount": 0,
+    "category": ["birthday"],"description": "MEGA Barbie Horse Jumping building set with 73 bricks and special pieces, accessories and 1 micro-doll, toy gift set for ages 5 and up.", "lane": 4, "shelf": 4, "wishlist": false},
+    
+    { "id": 1013, "name": "Dry Erase Markers Fine Tip", "imgname": "Marker.jpg", "price": 7.00 ,"discount": 0,
+    "category": [],"description": "Can be used on whiteboards and glass,Allows broad, medium or fine lines,Add excitement, emphasis and color", "lane": 6, "shelf": 11, "wishlist": true},
+    
+    { "id": 1014, "name": "Hearing Aid Batteries Size 312, Brown Tab 312", "imgname": "Battery.jpg", "price": 27.00 ,"discount": 0,
+    "category": [],"description": "1.4Volts,Mercury Free,Freshness Guaranteed,Compare and save with these premium zinc air 1.4 volt batteries.", "lane": 7, "shelf": 15, "wishlist": false},
+    
+    { "id": 1015, "name": "JBuds Pro Signature Earbuds", "imgname": "Earbuds.jpg", "price": 14.00 ,"discount": 0,
+    "category": ["thanksgiving"],"description": "Noise Isolating Earbuds compatible with most 3.5 mm aux jacks,Made in China", "lane": 7, "shelf": 13, "wishlist": false},
+    
+    { "id": 1016, "name": "Multi-purpose Contact Lens Solution", "imgname": "ContactLens.jpg", "price": 8.99 ,"discount": 0,
+    "category": [],"description": "Cleans, rinses, & disinfects,Removes protein daily,Safe and effective for soft lenses", "lane": 6, "shelf": 5, "wishlist": false},
+    
+    { "id": 1017, "name": "Ultra Oxi Liquid Detergent", "imgname": "Tide.jpg", "price": 5.00, "discount": 0.25,
+    "category": [],"description": "New Tide Ultra OXI liquid laundry detergent. Next-level stain fighting with 6x cleaning power* vs. the next leading OXI detergent and built-in pre-treaters to remove stains", "lane": 5, "shelf":4 , "wishlist": false}
+    
 ]

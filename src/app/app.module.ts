@@ -7,6 +7,8 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { InventoryComponent } from './components/inventory/inventory.component';
 
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatButtonToggleModule} from '@angular/material/button-toggle'
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
@@ -25,6 +27,8 @@ import { DatePipe } from '@angular/common';
     DialogComponent
   ],
   imports: [
+    MatButtonToggleModule,
+    MatTabsModule,
     MatDialogModule,
     MatSnackBarModule,
     MatButtonModule,

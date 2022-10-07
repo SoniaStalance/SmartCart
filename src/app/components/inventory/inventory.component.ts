@@ -25,6 +25,15 @@ export class InventoryComponent implements OnInit {
   inventoryDataSource!: MatTableDataSource<InventoryItem>;
   inventory: InventoryItem[] = [];
 
+  @ViewChild('OffersPaginator', {static: true}) offersPaginator!: MatPaginator;
+  @ViewChild('OffersSort', {static: true}) offersSort!: MatSort;
+  offersDataSource!: MatTableDataSource<InventoryItem>;
+  offers: InventoryItem[] = [];
+
+  @ViewChild('WishlistPaginator', {static: true}) wishlistPaginator!: MatPaginator;
+  @ViewChild('WishlistSort', {static: true}) wishlistSort!: MatSort;
+  wishlistDataSource!: MatTableDataSource<InventoryItem>;
+
   @ViewChild('CartPaginator', {static: false}) cartPaginator!: MatPaginator;
   @ViewChild('CartSort', {static: false}) cartSort!: MatSort;
   cartDataSource!: MatTableDataSource<CartItem>;
@@ -38,6 +47,9 @@ export class InventoryComponent implements OnInit {
   selectedRowId!: number;
 
   imgSrc = "";
+  description = "";
+  shelf = 0;
+  lane = 0;
   totalBill = 0;
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
@@ -51,6 +63,8 @@ export class InventoryComponent implements OnInit {
     public dialog: MatDialog
     ) {
     this.inventoryDataSource = new MatTableDataSource;
+    this.offersDataSource = new MatTableDataSource;
+    this.wishlistDataSource = new MatTableDataSource;
     this.cartDataSource = new MatTableDataSource;
     this.billDataSource = new MatTableDataSource;
   }
@@ -60,10 +74,15 @@ export class InventoryComponent implements OnInit {
     observable.subscribe((dataArray: InventoryItem[])=>{
       for(var i=0; i<dataArray.length; i++){
         this.inventory.push(dataArray[i]);
+        if(dataArray[i].discount > 0) this.offers.push(dataArray[i]);
       }
       this.inventoryDataSource.data = this.inventory;
       this.inventoryDataSource.sort = this.inventorySort;
       this.inventoryDataSource.paginator = this.inventoryPaginator;
+
+      this.offersDataSource.data = this.offers;
+      this.offersDataSource.sort = this.offersSort;
+      this.offersDataSource.paginator = this.offersPaginator;
     })
   }
 
@@ -202,9 +221,45 @@ export class InventoryComponent implements OnInit {
     this.updateCart();
   } 
 
+  selectedTab(tab: any){
+    var list: InventoryItem[] = [];
+
+    if(tab == 0){
+      //all items
+      list = this.inventory;
+    }else if(tab == 1){
+      //offers
+      this.inventory.forEach((item)=>{
+        if(item.discount>0) list.push(item);
+      })
+    }else{
+      //wishlists
+      if(tab == 2 || tab == "mywishlist"){
+        this.inventory.forEach((item)=>{
+          if(item.wishlist == true)
+            list.push(item);
+        })
+      }else{
+        this.inventory.forEach((item)=>{
+          item.category.forEach((category)=> {
+            if(category == tab){
+              list.push(item);
+            }
+          })
+        })
+      }
+    }
+    
+    this.inventoryDataSource.data = list;
+  }
+
   select(rowId: number, itemId: number){    
     this.selectedRowId = rowId;  
-    this.imgSrc = '../../assets/images/'+this.getImgName(itemId);
+    var details = this.getDetails(itemId);
+    this.imgSrc = '../../assets/images/'+details.img;
+    this.description = details.desc;
+    this.lane = details.lane;
+    this.shelf = details.shelf;
     }
 
   openSnackBar(message: string, color: string) {
@@ -214,15 +269,18 @@ export class InventoryComponent implements OnInit {
     });
   }
 
-  getImgName(id: number): string{
-    var imgName = "";
+  getDetails(id: number): any{
+    var details = { img: "", desc: "", shelf: 0, lane: 0 }
     for(var i=0;i<this.inventory.length; i++){
       if(this.inventory[i].id == id){
-         imgName += this.inventory[i].imgname;
+         details.img = this.inventory[i].imgname;
+         details.desc += this.inventory[i].description;
+         details.shelf = this.inventory[i].shelf;
+         details.lane = this.inventory[i].lane;
          break;
       }
     }
-    return imgName;
+    return details;
   }
 
   getItemPrice(id: number){

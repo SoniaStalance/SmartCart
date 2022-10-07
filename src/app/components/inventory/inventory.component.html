@@ -1,53 +1,89 @@
-<div class="flex-row-container" style="padding:5%; ">
+<div class="container">
   <!--Inventory Table-->
-  <div class="flex-row-item">
+  <div class="container-1">
     <div class="item-header">
       <img src="../../../assets/images/inventory.png" height="50px">
       <h2>Inventory</h2>
     </div>
-    <table
-      mat-table
-      matSort
-      [dataSource]="inventoryDataSource"
-      #InventorySort="matSort"
-      style="width: 100%; cursor: pointer;"
-    >
-      <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Items</th>
-        <td mat-cell *matCellDef="let row">{{ row.name }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="price">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Price</th>
-        <td mat-cell *matCellDef="let row" class="left-border-line">{{ row.price | currency : 'USD' : 'symbol': '1.2' }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="discount">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Discount</th>
-        <td mat-cell *matCellDef="let row" class="left-border-line"><span *ngIf="row.discount>0" class="discount">{{ row.discount | percent }}</span></td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns" (click)="select(row.id, row.id)" (dblclick)="addToCart(row)" [ngClass]="{ 'selected': row.id === selectedRowId }"></tr>
-    </table>
-
-    <mat-paginator
-      #InventoryPaginator="matPaginator"
-      [pageSize]="3"
-      [pageSizeOptions]="[3, 5, 10, 20, 100]"
-    ></mat-paginator>
-    
-    <div align="center" style="background-color: white" *ngIf="imgSrc.length>0">
-      <img width="200px" height="auto" src={{imgSrc}}>
-    </div>
   </div>
-
-  <!-- Cart Table -->
-  <div class="flex-row-item">
+  <div class="container-2">
     <div class="item-header">
       <img src="../../../assets/images/cart.png" height="50px">
       <h2>Cart</h2>
     </div>
+  </div>
+  <div class="container-3">
+    <div class="item-header">
+      <img src="../../../assets/images/bill.png" height="50px">
+      <h2>Bill</h2>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="container-1">
+    <mat-tab-group animationDuration="0ms" #tab (selectedTabChange)="selectedTab(tab.selectedIndex)">
+      <mat-tab label="All Items"></mat-tab>
+      <mat-tab label="Offers"></mat-tab>
+      <mat-tab label="Wishlists">
+        <div align="center" style="padding-top: 2.5%;">
+          <mat-button-toggle-group #wishlist="matButtonToggleGroup" (click)="selectedTab(wishlist.value)">
+            <mat-button-toggle checked="true" value="mywishlist">My Wishlist</mat-button-toggle>
+            <mat-button-toggle value="christmas">Christmas</mat-button-toggle>
+            <mat-button-toggle value="thanksgiving">Thanksgiving</mat-button-toggle>
+            <mat-button-toggle value="birthday">Birthday</mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+
+    <table
+          mat-table
+          matSort
+          [dataSource]="inventoryDataSource"
+          #InventorySort="matSort"
+          style="width: 100%; cursor: pointer;"
+        >
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Items</th>
+            <td mat-cell *matCellDef="let row">{{ row.name }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="price">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Price</th>
+            <td mat-cell *matCellDef="let row" class="left-border-line">{{ row.price | currency : 'USD' : 'symbol': '1.2' }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="discount">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Discount</th>
+            <td mat-cell *matCellDef="let row" class="left-border-line"><span *ngIf="row.discount>0" class="discount">{{ row.discount | percent }}</span></td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns" (click)="select(row.id, row.id)" (dblclick)="addToCart(row)" [ngClass]="{ 'selected': row.id === selectedRowId }"></tr>
+        </table>
+
+        <mat-paginator
+          #InventoryPaginator="matPaginator"
+          [pageSize]="3"
+          [pageSizeOptions]="[3, 5, 10, 20, 100]"
+        ></mat-paginator>
+    
+        <div align="center" style="background-color: white;" *ngIf="imgSrc.length>0">
+          <div style="width: 60%; border: 10px solid black; height:200px;">
+            <div><img width="50px" height="auto" src={{imgSrc}} style="float: left; width: 30%;"></div>
+            <div style="float: right; width: 60%; padding: 1%; text-align: left">
+              <p><b>Description</b></p>
+              <p><em>{{description}}</em></p>
+              <p>Lane No: {{lane}}, Shelf No: {{shelf}}</p>
+            </div>
+          </div>
+          <div align="center"><img width="80%" height="auto" src="../../../assets/images/screen.png"></div>
+        </div>
+  </div>
+
+  <!-- Cart Table -->
+  <div class="container-2">
     <table
       mat-table
       matSort
@@ -74,11 +110,7 @@
   </div>
 
   <!-- Bill Table -->
-  <div class="flex-row-item" >
-    <div class="item-header">
-      <img src="../../../assets/images/bill.png" height="50px">
-      <h2>Bill</h2>
-    </div>
+  <div class="container-3" >
     <table
       mat-table
       matSort

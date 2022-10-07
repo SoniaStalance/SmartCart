@@ -1,35 +1,40 @@
+.container {
+  width: 100%;
+  padding-top: 1%;
+}
+.container-1{
+  padding-left:1%;
+  float: left;
+  width: 39%;
+}
+
+.container-2{
+  padding-left: 1%;
+  padding-right:1%;
+  float: left;
+  width: 28%;
+}
+
+.container-3{
+  padding-right: 1%;
+  float: left;
+  width: 29%;
+}
+
 .full-width-table {
   width: 100%;
 }
+.mat-tab-group {
+  background-color: white;
+}
+
 .item-header{
   background-color:#C2E8FF; 
-  border-radius: 10px; 
   padding: 20px; 
   color:#323264; 
   text-align: center;
 }
-.flex-row-container {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: initial;
-  align-items: center;
-  justify-content: center;
-  padding: 5px;
-}
-.flex-row-container > .flex-row-item {
-  flex: 1 1 30%;
-  height: 100px;
-}
 
-.flex-row-item {
-  text-align: left;
-  margin-right: 1%;
-}    
-@media  screen and (max-width:481px) {
-  .flex-row-container > .flex-row-item {
-    flex: 100%
-  }
-}
 .selected {
   background-color: lightgrey;
 }
