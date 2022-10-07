@@ -37,6 +37,7 @@ export class InventoryComponent implements OnInit {
 
   selectedRowId!: number;
 
+  showDisplay = false;
   imgSrc = "";
   description = "";
   shelf = 0;
@@ -110,7 +111,7 @@ export class InventoryComponent implements OnInit {
     {
       if((this.cart[i]).uid == uid){
         item = (this.cart[i].name);
-        this.imgSrc = "";
+        this.showDisplay = false;
         this.cart.splice(i,1);
         break;
       }
@@ -210,12 +211,16 @@ export class InventoryComponent implements OnInit {
   }
 
   reset(){
-    this.imgSrc = "";
+    this.showDisplay = false;
     this.bill = [];
     this.cart = [];
     this.totalBill = 0;
     this.updateBill();
     this.updateCart();
+
+    this.inventory.forEach((item)=>{
+      item.cart = false;
+    })
   } 
 
   selectedTab(tab: any){
@@ -251,6 +256,7 @@ export class InventoryComponent implements OnInit {
   }
 
   select(rowId: number, itemId: number){    
+    this.showDisplay = true;
     this.selectedRowId = rowId;  
     var details = this.getDetails(itemId);
     this.imgSrc = '../../assets/images/'+details.img;
