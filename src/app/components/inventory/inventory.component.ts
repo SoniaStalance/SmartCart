@@ -13,6 +13,8 @@ import { BillItem } from 'src/app/models/BillItem.model';
 import { DialogComponent } from '../dialog/dialog.component';
 
 import { InventoryService } from '../../services/inventory.service';
+import { DatasetItem } from 'src/app/models/DatasetItem.model';
+import { NotificationItem } from 'src/app/models/NotificationItem.model';
 
 @Component({
   selector: 'app-inventory',
@@ -37,6 +39,10 @@ export class InventoryComponent implements OnInit {
 
   selectedRowId!: number;
 
+  //notifications
+  panelOpenState = false;
+  notifications: NotificationItem[] = [];
+
   showDisplay = false;
   imgSrc = "";
   description = "";
@@ -45,7 +51,7 @@ export class InventoryComponent implements OnInit {
   totalBill = 0;
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns = ['added', 'name','price', 'discount'];
+  displayedColumns = ['added', 'name','price', 'discount','lane'];
   displayedColumnsCart = ['name'];
   displayedColumnsBill = ['name','price','quantity','total'];
 
@@ -61,14 +67,55 @@ export class InventoryComponent implements OnInit {
 
   ngOnInit(): void {
     const observable = this.service.getData();
-    observable.subscribe((dataArray: InventoryItem[])=>{
+    observable.subscribe((dataArray: DatasetItem[])=>{
       for(var i=0; i<dataArray.length; i++){
-        this.inventory.push(dataArray[i]);
+        var item: InventoryItem = {
+          category: dataArray[i].category,
+          cart: false,
+          wishlist: false,
+          shelf: dataArray[i].shelf,
+          lane: dataArray[i].lane,
+          description: dataArray[i].description,
+          discount: dataArray[i].discount,
+          price: dataArray[i].price,
+          imgname: dataArray[i].imgname,
+          name: dataArray[i].name,
+          id: dataArray[i].id
+        }
+        this.inventory.push(item);
       }
       this.inventoryDataSource.data = this.inventory;
       this.inventoryDataSource.sort = this.inventorySort;
       this.inventoryDataSource.paginator = this.inventoryPaginator;
-    })
+
+      //slecting the first item on list by default
+      this.select(this.inventoryDataSource.data[0].id, this.inventoryDataSource.data[0].id);
+
+      this.cartDataSource.data = this.cart;
+      this.cartDataSource.sort = this.cartSort;
+      this.cartDataSource.paginator = this.cartPaginator;
+
+      this.billDataSource.data = this.bill;
+      this.billDataSource.sort = this.billSort;
+      this.billDataSource.paginator = this.billPaginator;
+    });
+
+    const notificationsObservable = this.service.getReceipts();
+    notificationsObservable.subscribe((dataArray: any[])=>{
+      for(var i=0; i<dataArray.length; i++){
+        let refill = dataArray[i].refill
+        for(var j=0; j<refill.length; j++){
+          let entry = {
+            id: refill[j].id,
+            name: (this.getDetails(refill[j].id)).name,
+            refillDate: refill[j].refillDate
+          }
+          this.notifications.push(entry);
+        }
+      }
+      console.log(this.notifications)
+    });
+
   }
 
   playSound(filename: string){
@@ -76,6 +123,23 @@ export class InventoryComponent implements OnInit {
     audio.src = "../../assets/sounds/"+filename;
     audio.load();
     audio.play();
+  }
+
+  //add reminder item to cart
+  addItem(id:number){
+    for(var i=0; i<this.notifications.length; i++){
+      if(this.notifications[i].id == id){
+        this.notifications.splice(i, 1);
+        break;
+      }
+    }
+
+    for(var i=0; i<this.inventory.length; i++){
+      if(this.inventory[i].id == id){
+        this.addToCart(this.inventory[i]);
+        break;
+      }
+    }
   }
 
   addToCart(item: InventoryItem) {
@@ -123,8 +187,6 @@ export class InventoryComponent implements OnInit {
 
   updateCart(){
     this.cartDataSource.data = this.cart;
-    this.cartDataSource.sort = this.cartSort;
-    this.cartDataSource.paginator = this.cartPaginator;
   }
 
   addToBill(item: InventoryItem){
@@ -186,8 +248,6 @@ export class InventoryComponent implements OnInit {
 
   updateBill(){
     this.billDataSource.data = this.bill;
-    this.billDataSource.sort = this.billSort;
-    this.billDataSource.paginator = this.billPaginator;
   }
 
   pay(){
@@ -253,8 +313,15 @@ export class InventoryComponent implements OnInit {
     }
 
     this.inventoryDataSource.data = list;
+    //select the first item by default
+    if(list.length > 0)
+    this.select(list[0].id, list[0].id);
+    else{
+      this.showDisplay = false;
+    }
   }
 
+  //selected row
   select(rowId: number, itemId: number){    
     this.showDisplay = true;
     this.selectedRowId = rowId;  
@@ -273,9 +340,10 @@ export class InventoryComponent implements OnInit {
   }
 
   getDetails(id: number): any{
-    var details = { img: "", desc: "", shelf: 0, lane: 0 }
+    var details = { name: "", img: "", desc: "", shelf: 0, lane: 0 }
     for(var i=0;i<this.inventory.length; i++){
       if(this.inventory[i].id == id){
+         details.name = this.inventory[i].name;
          details.img = this.inventory[i].imgname;
          details.desc += this.inventory[i].description;
          details.shelf = this.inventory[i].shelf;
@@ -297,7 +365,6 @@ export class InventoryComponent implements OnInit {
     return price;
   }
 
-  //does not update in dataset
   updateWishlist(id: number){
     this.inventory.forEach((item)=>{
       if(item.id == id)

@@ -1,3 +1,12 @@
+.toolbar{
+  background-color:#323264;
+  color:white;
+  padding: 20px;
+}
+.notification{
+  background-color:#323264;
+  color:white;
+}
 .container {
   width: 100%;
   padding-top: 1%;
@@ -21,9 +30,6 @@
   width: 29%;
 }
 
-.full-width-table {
-  width: 100%;
-}
 .mat-tab-group {
   background-color: white;
 }

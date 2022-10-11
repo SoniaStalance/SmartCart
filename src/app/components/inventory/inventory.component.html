@@ -1,3 +1,29 @@
+<mat-toolbar class="toolbar">
+      <img src="../assets/images/icon.png" height="30px" style="padding: 10px;">
+      <span style="margin-right: 60%;">i-Smart Cart</span>
+      <div>   
+        <mat-expansion-panel (opened)="panelOpenState = true"
+                             (closed)="panelOpenState = false"
+                             class="notification">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Bell Icon here
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+            <div class="container">
+              <div *ngFor="let item of notifications" style="cursor: pointer; padding-bottom: 0.5%;" [ngClass]="{ 'selected': item.id === selectedRowId }">
+                <hr>
+                <p (click)="select(item.id, item.id)" (dblclick)="addItem(item.id)">{{item.name}} due for refill on {{item.refillDate}}</p>
+              </div>  
+              <div *ngIf="notifications.length<=0" style="padding-bottom: 0.5%;">
+                <hr>
+                <p>No notifications</p>
+              </div>
+            </div>  
+        </mat-expansion-panel>
+      </div>
+</mat-toolbar>
+
 <div class="container">
   <!--Inventory Table-->
   <div class="container-1">
@@ -45,7 +71,7 @@
           style="width: 100%; cursor: pointer;"
         >
           <ng-container matColumnDef="added">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+            <th mat-header-cell *matHeaderCellDef></th>
             <td mat-cell *matCellDef="let row">
               <img (click)="updateWishlist(row.id)" matTooltip="Remove from wishlist" *ngIf="row.wishlist == true && row.cart == false" src="../../../assets/images/heart.png" width="15px" height="auto">
               <img (click)="updateWishlist(row.id)" matTooltip="Add to wishlist" *ngIf="row.wishlist == false && row.cart == false" src="../../../assets/images/greyheart.png" width="15px" height="auto">
@@ -66,6 +92,11 @@
           <ng-container matColumnDef="discount">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Discount</th>
             <td mat-cell *matCellDef="let row" class="left-border-line"><span *ngIf="row.discount>0" class="discount">{{ row.discount | percent }}</span></td>
+          </ng-container>
+
+          <ng-container matColumnDef="lane">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Lane[Shelf]</th>
+            <td mat-cell *matCellDef="let row" class="left-border-line">{{ row.lane }} <span style="color: grey;">[ {{row.shelf}} ]</span></td>
           </ng-container>
 
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

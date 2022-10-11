@@ -1,0 +1,11 @@
+[
+    {
+        "rid": 1,
+        "items": [1002, 1006, 1016],
+        "refill": [
+            {"id": 1006, "refillDate": "Oct 10, 2022"},
+            {"id": 1016, "refillDate": "Oct 12, 2022"}
+        ],
+        "purchaseDate": "Oct 1, 2022"
+    }
+]

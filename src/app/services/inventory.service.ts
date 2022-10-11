@@ -8,9 +8,14 @@ import { InventoryItem } from '../models/InventoryItem.model';
 export class InventoryService {
 
   constructor(private http: HttpClient) { }
-  url: string = "../assets/dataset.json"
+  url: string = "../assets/dataset.json";
+  receiptsUrl: string = "../assets/receipts.json";
   //observable
   getData() {
     return this.http.get<InventoryItem[]>(this.url);
+  }
+
+  getReceipts() {
+    return this.http.get<any>(this.receiptsUrl);
   }
 }

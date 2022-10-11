@@ -17,7 +17,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
-import { MatTooltipModule } from '@angular/material/tooltip'
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { DialogComponent } from './components/dialog/dialog.component';
 import { DatePipe } from '@angular/common';
 
@@ -28,6 +29,7 @@ import { DatePipe } from '@angular/common';
     DialogComponent
   ],
   imports: [
+    MatExpansionModule,
     MatTooltipModule,
     MatButtonToggleModule,
     MatTabsModule,
