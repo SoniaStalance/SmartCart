@@ -13,8 +13,10 @@ import { BillItem } from 'src/app/models/BillItem.model';
 import { DialogComponent } from '../dialog/dialog.component';
 
 import { InventoryService } from '../../services/inventory.service';
+import { UsersShoppingData } from 'src/app/models/UsersShoppingData.model';
 import { DatasetItem } from 'src/app/models/DatasetItem.model';
 import { NotificationItem } from 'src/app/models/NotificationItem.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-inventory',
@@ -37,11 +39,16 @@ export class InventoryComponent implements OnInit {
   billDataSource!: MatTableDataSource<BillItem>;
   bill: BillItem[] = [];
 
-  selectedRowId!: number;
+  username: string = "Guest User";
+  guest = true;
 
-  //notifications
-  panelOpenState = false;
+  notificationDataSource!: MatTableDataSource<NotificationItem>;
+
+  selectedRowId!: number;
+  activeTab = 0;
+
   notifications: NotificationItem[] = [];
+  showNotifications= false;
 
   showDisplay = false;
   imgSrc = "";
@@ -54,15 +61,28 @@ export class InventoryComponent implements OnInit {
   displayedColumns = ['added', 'name','price', 'discount','lane'];
   displayedColumnsCart = ['name'];
   displayedColumnsBill = ['name','price','quantity','total'];
+  notificationColumns = ['message', 'close'];
 
   constructor(
     private service: InventoryService,
     private snackBar: MatSnackBar,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private router: Router
     ) {
+    var user = sessionStorage.getItem("username");
+    if(user==null){
+      //redirect
+      router.navigate(['']);
+      this.openSnackBar("Please sign in first!", "red");
+    }
+    if(user!=null && user !="guest"){
+      this.username = user;
+      this.guest = false;
+    }
     this.inventoryDataSource = new MatTableDataSource;
     this.cartDataSource = new MatTableDataSource;
     this.billDataSource = new MatTableDataSource;
+    this.notificationDataSource = new MatTableDataSource;
   }
 
   ngOnInit(): void {
@@ -100,20 +120,57 @@ export class InventoryComponent implements OnInit {
       this.billDataSource.paginator = this.billPaginator;
     });
 
-    const notificationsObservable = this.service.getReceipts();
-    notificationsObservable.subscribe((dataArray: any[])=>{
+    const notificationsObservable = this.service.getUsersShoppingData();
+    notificationsObservable.subscribe((dataArray: UsersShoppingData[])=>{
       for(var i=0; i<dataArray.length; i++){
-        let refill = dataArray[i].refill
-        for(var j=0; j<refill.length; j++){
-          let entry = {
-            id: refill[j].id,
-            name: (this.getDetails(refill[j].id)).name,
-            refillDate: refill[j].refillDate
+        if(dataArray[i].username == this.username){
+          var receipts = dataArray[i].receipts;
+          for(var r = 0; r<receipts.length; r++){
+            let refill = receipts[r].refill
+            for(var j=0; j<refill.length; j++){
+              let entry = {
+                id: refill[j].id,
+                name: (this.getDetails(refill[j].id)).name,
+                message: "refill is due on",
+                refillDate: refill[j].refillDate,
+                type: "refill"
+              }
+              this.notifications.push(entry);
+            }
           }
-          this.notifications.push(entry);
+
+          if((dataArray[i].wishlist).length > 0){
+            //update wishlist
+            for(var w =0; w<(dataArray[i].wishlist).length; w++){
+              this.inventory.forEach((item)=>{
+                if(item.id == dataArray[i].wishlist[w]){
+                  item.wishlist = true;
+                }
+              })
+            }
+            //notification
+            var msg: string = " is there in your wishlist";
+            if((dataArray[i].wishlist).length > 2){
+              var nos = (dataArray[i].wishlist).length-1;
+              msg = ` and ${nos} more items are there in your wishlist`;
+            }else if((dataArray[i].wishlist).length == 2){
+              msg = " and 1 more item is there in your wishlist";
+            }
+            let entry = {
+              id: dataArray[i].wishlist[0],
+              name: (this.getDetails(dataArray[i].wishlist[0])).name,
+              message: msg,
+              refillDate: null,
+              type: "wishlist"
+            }
+
+            this.notifications.push(entry);
+          }
+          
+          break;
         }
       }
-      console.log(this.notifications)
+      this.notificationDataSource.data = this.notifications;
     });
 
   }
@@ -125,19 +182,32 @@ export class InventoryComponent implements OnInit {
     audio.play();
   }
 
-  //add reminder item to cart
-  addItem(id:number){
+  deleteNotification(id: number){
     for(var i=0; i<this.notifications.length; i++){
       if(this.notifications[i].id == id){
         this.notifications.splice(i, 1);
+        this.notificationDataSource.data = this.notifications;
         break;
       }
     }
+  }
+  //add reminder item to cart
+  addItem(id:number, type: string){
+    this.deleteNotification(id);
+    if(type == "refill"){
+      for(var i=0; i<this.inventory.length; i++){
+        if(this.inventory[i].id == id){
+          this.addToCart(this.inventory[i]);
+          break;
+        }
+      }
+    }
 
-    for(var i=0; i<this.inventory.length; i++){
-      if(this.inventory[i].id == id){
-        this.addToCart(this.inventory[i]);
-        break;
+    if(type == "wishlist"){
+      for(var i=0; i<this.inventory.length; i++){
+        if(this.inventory[i].wishlist == true){
+          this.addToCart(this.inventory[i]);
+        }
       }
     }
   }
@@ -321,8 +391,20 @@ export class InventoryComponent implements OnInit {
     }
   }
 
+  selectNotification(id: number, type: string){
+    if(type == "wishlist"){
+      this.selectedTab(2);
+      this.activeTab = 2;
+    }else{
+      this.selectedTab(0);
+      this.activeTab = 0;
+    }
+    this.select(id, id);
+  }
+
   //selected row
   select(rowId: number, itemId: number){    
+    
     this.showDisplay = true;
     this.selectedRowId = rowId;  
     var details = this.getDetails(itemId);
@@ -370,5 +452,13 @@ export class InventoryComponent implements OnInit {
       if(item.id == id)
         item.wishlist = !item.wishlist;
     })
+  }
+
+  
+
+  logout(){
+    sessionStorage.clear();
+    this.router.navigate(['']);
+    this.openSnackBar("Logged out successfully", "green");
   }
 }

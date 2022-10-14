@@ -1,5 +1,7 @@
 export interface NotificationItem{
-    id: number,
+    id: number|null,
     name: string,
-    refillDate: Date
+    message: string,
+    refillDate: Date|null,
+    type: string
 }

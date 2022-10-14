@@ -1,0 +1,30 @@
+<div class="container">
+    <div style="margin-bottom: 2%">
+        <mat-toolbar class="toolbar">
+            <img style="margin-left: 40%;" src="../../../assets/images/walgreens.png" height="60px">
+        </mat-toolbar>
+    </div>
+    <div align="center">
+        <div class="login-form">
+            <span style="color: #323264; font-size: 30px; font-weight:500;">Sign In</span>
+            <form [formGroup]="loginForm" class="form-container">
+                <div class="row" style="margin-top:5%">
+                  <mat-form-field [style.width.%]="80">
+                    <input formControlName="username" matInput placeholder="Username" required>
+                  </mat-form-field>
+                </div>
+                <div class="row" style="margin-top:5%">
+                    <mat-form-field [style.width.%]="80">
+                        <input type="password" formControlName="password" matInput placeholder="Password" required>
+                    </mat-form-field>    
+                </div>
+                <div class="row" style="margin-top:5%">
+                    <button style="background-color: #323264; color: white; font-size: medium; padding: 2%;" [style.width.%]="70" (click)="login()" type="submit" mat-raised-button>Sign in</button>
+                </div>
+                <div class="row" style="margin-top:5%">
+                    <button style="background-color: #C2E8FF; color:  #323264; font-size: medium; padding: 2%;" [style.width.%]="70" (click)="guestLogin()" type="submit" mat-raised-button>Sign in as guest</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
