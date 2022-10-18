@@ -1,0 +1,33 @@
+[
+    {
+        "username": "Sonia",
+        "receipts": [
+            {
+                "rid": 1,
+                "items": [1002, 1006, 1016],
+                "refill": [{
+                    "id":1016,
+                    "refillDate": "Oct 30, 2022"
+                }
+                    
+                ],
+                "purchaseDate": "Oct 1, 2022"
+            }
+        ],
+        "wishlist":[1001, 1011, 1012]
+    },
+    {
+        "username": "Demo",
+        "receipts": [
+            {
+                "rid": 1,
+                "items": [1014, 1011],
+                "refill": [
+                    
+                ],
+                "purchaseDate": "Oct 1, 2022"
+            }
+        ],
+        "wishlist":[1010]
+    }
+]
