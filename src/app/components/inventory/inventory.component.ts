@@ -124,6 +124,7 @@ export class InventoryComponent implements OnInit {
     notificationsObservable.subscribe((dataArray: UsersShoppingData[])=>{
       for(var i=0; i<dataArray.length; i++){
         if(dataArray[i].username == this.username){
+          //receipts
           var receipts = dataArray[i].receipts;
           for(var r = 0; r<receipts.length; r++){
             let refill = receipts[r].refill
@@ -138,35 +139,33 @@ export class InventoryComponent implements OnInit {
               this.notifications.push(entry);
             }
           }
-
+          //wishlist
           if((dataArray[i].wishlist).length > 0){
             //update wishlist
+            //notification
+            
             for(var w =0; w<(dataArray[i].wishlist).length; w++){
+              let entry = {
+                id: dataArray[i].wishlist[w],
+                name: (this.getDetails(dataArray[i].wishlist[w])).name,
+                message: " is there in your wishlist",
+                refillDate: null,
+                type: "wishlist"
+              }
+  
+              this.notifications.push(entry);
+
               this.inventory.forEach((item)=>{
                 if(item.id == dataArray[i].wishlist[w]){
                   item.wishlist = true;
                 }
               })
             }
-            //notification
-            var msg: string = " is there in your wishlist";
-            if((dataArray[i].wishlist).length > 2){
-              var nos = (dataArray[i].wishlist).length-1;
-              msg = ` and ${nos} more items are there in your wishlist`;
-            }else if((dataArray[i].wishlist).length == 2){
-              msg = " and 1 more item is there in your wishlist";
-            }
-            let entry = {
-              id: dataArray[i].wishlist[0],
-              name: (this.getDetails(dataArray[i].wishlist[0])).name,
-              message: msg,
-              refillDate: null,
-              type: "wishlist"
-            }
-
-            this.notifications.push(entry);
+            
+            
+            
           }
-          
+          //break because we got our users data
           break;
         }
       }
@@ -194,22 +193,12 @@ export class InventoryComponent implements OnInit {
   //add reminder item to cart
   addItem(id:number, type: string){
     this.deleteNotification(id);
-    if(type == "refill"){
       for(var i=0; i<this.inventory.length; i++){
         if(this.inventory[i].id == id){
           this.addToCart(this.inventory[i]);
           break;
         }
       }
-    }
-
-    if(type == "wishlist"){
-      for(var i=0; i<this.inventory.length; i++){
-        if(this.inventory[i].wishlist == true){
-          this.addToCart(this.inventory[i]);
-        }
-      }
-    }
   }
 
   addToCart(item: InventoryItem) {

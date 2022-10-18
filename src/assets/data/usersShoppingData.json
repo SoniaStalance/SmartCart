@@ -5,9 +5,11 @@
             {
                 "rid": 1,
                 "items": [1002, 1006, 1016],
-                "refill": [
-                    {"id": 1006, "refillDate": "Oct 30, 2022"},
-                    {"id": 1016, "refillDate": "Oct 31, 2022"}
+                "refill": [{
+                    "id":1016,
+                    "refillDate": "Oct 30, 2022"
+                }
+                    
                 ],
                 "purchaseDate": "Oct 1, 2022"
             }
@@ -21,11 +23,11 @@
                 "rid": 1,
                 "items": [1014, 1011],
                 "refill": [
-                    {"id": 1014, "refillDate": "Oct 20, 2022"}
+                    
                 ],
                 "purchaseDate": "Oct 1, 2022"
             }
         ],
-        "wishlist":[]
+        "wishlist":[1010]
     }
 ]

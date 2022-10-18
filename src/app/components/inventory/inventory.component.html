@@ -42,13 +42,13 @@
   <div class="container-1">
     <div class="item-header">
       <img src="../../../assets/images/inventory.png" height="50px">
-      <h2>Inventory</h2>
+      <h2>Store</h2>
     </div>
   </div>
   <div class="container-2">
     <div class="item-header">
       <img src="../../../assets/images/cart.png" height="50px">
-      <h2>Cart</h2>
+      <h2>Smart Cart</h2>
     </div>
   </div>
   <div class="container-3">
@@ -108,7 +108,7 @@
           </ng-container>
 
           <ng-container matColumnDef="lane">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Lane[Shelf]</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Lane[Bay]</th>
             <td mat-cell *matCellDef="let row" class="left-border-line">{{ row.lane }} <span style="color: grey;">[ {{row.shelf}} ]</span></td>
           </ng-container>
 
@@ -128,7 +128,7 @@
             <div style="float: right; width: 60%; padding: 1%; text-align: left">
               <p><b>Description</b></p>
               <p><em>{{description}}</em></p>
-              <p>Lane No: {{lane}}, Shelf No: {{shelf}}</p>
+              <p>Lane No: {{lane}}, Bay: {{shelf}}</p>
             </div>
           </div>
           <div align="center"><img width="80%" height="auto" src="../../../assets/images/screen.png"></div>
@@ -150,7 +150,7 @@
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Cart</th>
         <td mat-cell *matCellDef="let row" >{{ row.name }}</td>
       </ng-container>
-   
+    
       <tr mat-header-row *matHeaderRowDef="displayedColumnsCart"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumnsCart" (click)="select(row.uid, row.id)" (dblclick)="removeFromCart(row.id, row.uid)" [ngClass]="{ 'selected': row.uid === selectedRowId }" matTooltip="Double tab to remove"></tr>
     </table>
@@ -191,7 +191,7 @@
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Amount</th>
         <td mat-cell *matCellDef="let row" class="left-border-line">{{ row.total | currency : 'USD' : 'symbol': '1.2'  }}</td>
       </ng-container>
-   
+    
       <tr mat-header-row *matHeaderRowDef="displayedColumnsBill"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumnsBill"></tr>
     </table>
