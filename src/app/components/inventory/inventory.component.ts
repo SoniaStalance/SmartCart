@@ -148,7 +148,7 @@ export class InventoryComponent implements OnInit {
               let entry = {
                 id: dataArray[i].wishlist[w],
                 name: (this.getDetails(dataArray[i].wishlist[w])).name,
-                message: " is there in your wishlist",
+                message: " is in your wishlist",
                 refillDate: null,
                 type: "wishlist"
               }
