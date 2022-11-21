@@ -5,7 +5,7 @@
   <div style="float:left; width: 60%">
     <h1>i-Smart Cart</h1>
   </div>
-  <div *ngIf="guest==false" style="float:left; width: 30%">
+  <div style="float:left; width: 30%">
     <div style="margin-left: 60%;">
       <mat-icon *ngIf="notifications.length>0" (click)="showNotifications=!showNotifications" matBadgeSize="small" [matBadge]="notifications.length" matBadgeColor="warn">notifications</mat-icon>
       <mat-icon *ngIf="notifications.length<=0" (click)="showNotifications=!showNotifications"  matTooltip="No notifications">notifications</mat-icon>
@@ -19,7 +19,7 @@
         style="width: 100%; cursor: pointer; margin-top: 2%;"
       >
         <ng-container matColumnDef="message">
-          <td mat-cell *matCellDef="let row">{{ row.name }} {{ row.message }} {{row.refillDate}}</td>
+          <td mat-cell *matCellDef="let row"><span style="color: darkblue; font-weight:500">{{ row.name }}</span> {{ row.message }} {{row.refillDate}}</td>
         </ng-container>
       
         <ng-container matColumnDef="close">
@@ -129,6 +129,7 @@
               <p><b>Description</b></p>
               <p><em>{{description}}</em></p>
               <p>Lane No: {{lane}}, Bay: {{shelf}}</p>
+              <p *ngIf="qty<5"><mat-icon style="color: orange;">warning</mat-icon> Only {{qty}} left in stock</p>
             </div>
           </div>
           <div align="center"><img width="80%" height="auto" src="../../../assets/images/screen.png"></div>

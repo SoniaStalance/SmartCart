@@ -17,6 +17,7 @@ import { UsersShoppingData } from 'src/app/models/UsersShoppingData.model';
 import { DatasetItem } from 'src/app/models/DatasetItem.model';
 import { NotificationItem } from 'src/app/models/NotificationItem.model';
 import { Router } from '@angular/router';
+import { timeInterval, timer } from 'rxjs';
 
 @Component({
   selector: 'app-inventory',
@@ -55,6 +56,7 @@ export class InventoryComponent implements OnInit {
   description = "";
   shelf = 0;
   lane = 0;
+  qty = 0;
   totalBill = 0;
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
@@ -73,7 +75,7 @@ export class InventoryComponent implements OnInit {
     if(user==null){
       //redirect
       router.navigate(['']);
-      this.openSnackBar("Please sign in first!", "red");
+      this.openSnackBar("Please sign in first!", "red", 3000);
     }
     if(user!=null && user !="guest"){
       this.username = user;
@@ -90,6 +92,7 @@ export class InventoryComponent implements OnInit {
     observable.subscribe((dataArray: DatasetItem[])=>{
       for(var i=0; i<dataArray.length; i++){
         var item: InventoryItem = {
+          qty: dataArray[i].qty,
           category: dataArray[i].category,
           cart: false,
           wishlist: false,
@@ -201,30 +204,67 @@ export class InventoryComponent implements OnInit {
       }
   }
 
-  addToCart(item: InventoryItem) {
-    this.playSound("add.wav");
-    //updated added to cart in inventory
-    this.inventory.forEach((inv)=>{
-      if(inv.id == item.id && inv.cart == false)
-        inv.cart = true;
-    })
+  inStock(id: number){
+    for(let i=0; i<this.inventory.length; i++){
+      if(this.inventory[i].id == id){
+        if(this.inventory[i].qty > 0)
+        {  
+          this.inventory[i].qty--;
+          this.select(this.inventory[i].id, this.inventory[i].id);
 
-
-    let suffix = "1";   //by default 1 for 1st occurance of given item id
-    for(var i=this.cart.length-1; i>=0; i--){
-      if(this.cart[i].id == item.id){
-        suffix = (this.cart[i].uid%10 + 1).toString();
+          //notify user and remove item from inventory
+          if(this.inventory[i].qty == 0){
+            let entry = {
+              id: this.inventory[i].id,
+              name: this.inventory[i].name,
+              message: " is now out of stock! The store has been notified!",
+              refillDate: null,
+              type: "refill"
+            }
+            this.notifications.push(entry);
+            this.notificationDataSource.data = this.notifications;
+            this.inventory.splice(i, 1);
+            this.selectedTab(0);
+          }
+          
+          return true;
+        }
         break;
       }
     }
-    //unique id for every cart element
-    let uid: number = parseInt(item.id+suffix);
-    let newCartItem: CartItem = {"uid": uid,"id": item.id, "name": item.name};
-    this.cart.push(newCartItem);
-    this.updateCart();
-    
-    this.addToBill(item);
-    this.openSnackBar(item.name+" was added to cart", "green");
+    return false;
+  }
+
+  addToCart(item: InventoryItem) {
+    //check stock
+    if(this.inStock(item.id)){
+      this.playSound("add.wav");
+      //updated added to cart in inventory
+      this.inventory.forEach((inv)=>{
+        if(inv.id == item.id && inv.cart == false)
+          inv.cart = true;
+      })
+
+
+      let suffix = "1";   //by default 1 for 1st occurance of given item id
+      for(var i=this.cart.length-1; i>=0; i--){
+        if(this.cart[i].id == item.id){
+          suffix = (this.cart[i].uid%10 + 1).toString();
+          break;
+        }
+      }
+      //unique id for every cart element
+      let uid: number = parseInt(item.id+suffix);
+      let newCartItem: CartItem = {"uid": uid,"id": item.id, "name": item.name};
+      this.cart.push(newCartItem);
+      this.updateCart();
+      
+      this.addToBill(item);
+      timeInterval.call(1000)
+      this.openSnackBar(item.name+" was added to cart", "green", 3000);
+      if(item.qty == 0)
+        this.openSnackBar(item.name+" is now out of stock! The store has been notified!", "red", 3000);
+    }
   }
 
   removeFromCart(id:number, uid: number){
@@ -241,7 +281,7 @@ export class InventoryComponent implements OnInit {
     }
     this.updateCart();
     this.removeFromBill(id);
-    this.openSnackBar(item+" was removed from cart", "red");
+    this.openSnackBar(item+" was removed from cart", "red", 3000);
   }
 
   updateCart(){
@@ -321,10 +361,10 @@ export class InventoryComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if(result){
         this.playSound("success.wav")
-        this.openSnackBar("Payment completed successfully", "green")
+        this.openSnackBar("Payment completed successfully", "green", 3000)
         this.reset();
       }else{
-        this.openSnackBar("Payment not done", "red")
+        this.openSnackBar("Payment not done", "red", 3000)
       }
     });
   }
@@ -394,24 +434,25 @@ export class InventoryComponent implements OnInit {
   //selected row
   select(rowId: number, itemId: number){    
     
-    this.showDisplay = true;
     this.selectedRowId = rowId;  
     var details = this.getDetails(itemId);
     this.imgSrc = '../../assets/images/'+details.img;
     this.description = details.desc;
     this.lane = details.lane;
     this.shelf = details.shelf;
+    this.qty = details.qty;
+    this.showDisplay = (details.qty!=0);
     }
 
-  openSnackBar(message: string, color: string) {
+  openSnackBar(message: string, color: string, time: number) {
     this.snackBar.open(message, "", {
-      duration: 3000,
+      duration: time,
       panelClass: [color]
     });
   }
 
   getDetails(id: number): any{
-    var details = { name: "", img: "", desc: "", shelf: 0, lane: 0 }
+    var details = { name: "", img: "", desc: "", shelf: 0, lane: 0, qty: 0 }
     for(var i=0;i<this.inventory.length; i++){
       if(this.inventory[i].id == id){
          details.name = this.inventory[i].name;
@@ -419,7 +460,7 @@ export class InventoryComponent implements OnInit {
          details.desc += this.inventory[i].description;
          details.shelf = this.inventory[i].shelf;
          details.lane = this.inventory[i].lane;
-         break;
+         details.qty = this.inventory[i].qty;
       }
     }
     return details;
@@ -448,6 +489,6 @@ export class InventoryComponent implements OnInit {
   logout(){
     sessionStorage.clear();
     this.router.navigate(['']);
-    this.openSnackBar("Logged out successfully", "green");
+    this.openSnackBar("Logged out successfully", "green", 3000);
   }
 }

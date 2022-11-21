@@ -1,4 +1,5 @@
 export interface DatasetItem {
+    qty: number,
     category: [],
     shelf: number,
     lane: number,

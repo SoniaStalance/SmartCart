@@ -1,4 +1,5 @@
 export interface InventoryItem {
+    qty: number,
     category: [],
     cart: boolean,
     wishlist: boolean,
